@@ -1,6 +1,9 @@
-from config import settings
 import discord
+import re
+import bday
+import user_db
 from discord.ext import commands
+from config import settings
 
 bot = commands.Bot(command_prefix = settings['prefix'])
 
@@ -8,6 +11,20 @@ bot = commands.Bot(command_prefix = settings['prefix'])
 async def hello(ctx): # Создаём функцию и передаём аргумент ctx.
     author = ctx.message.author # Объявляем переменную author и записываем туда информацию об авторе.
     await ctx.send(f'Hello, {author.mention}!') # Выводим сообщение с упоминанием автора, обращаясь к переменной author.
+
+@bot.command()
+async def register(ctx, arg):
+    date = str.strip(arg)
+    author = ctx.message.author.mention
+    if re.match(r"\d{2}\.\d{2}\.\d{4}", date) is None:
+        await ctx.send(f"Sorry, {author}, can't register your bday due the unrecognized date format ;(")
+    try:
+        user_db.register_user(author, date)
+        bday.schedule_bday(author, date)
+        await ctx.send(f"Congrats, {author}, you've been registred :D")
+    except Exception as e:
+        await ctx.send(f"Sorry, {author}, can't register your bday due error: {e} ;(")
+    
 
 if __name__ == "__main__":
     bot.run(settings['token']) # Обращаемся к словарю settings с ключом token, для получения токена
