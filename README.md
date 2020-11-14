@@ -12,4 +12,8 @@ Multipurpose Discord bot fo apprentices of Jesus Christ
         * UserN
     * Channels
         * Channel1 [Id : str]
-            * User [Name : str]
+            * User1 [Name : str]
+            * ...
+            * UserN
+        * ...
+        * ChannelN
