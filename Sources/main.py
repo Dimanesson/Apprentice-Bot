@@ -1,4 +1,5 @@
 import discord
+import os
 import re
 import bday
 import user_db
@@ -35,4 +36,4 @@ async def instagram(ctx : discord.ext.commands.Context, arg):
         await ctx.send(f"Sorry, no such video  {e}")
 
 if __name__ == "__main__":
-    bot.run(settings['token'])
+    bot.run(os.environ['TOKEN'])
