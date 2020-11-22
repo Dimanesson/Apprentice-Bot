@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.poolmanager import PoolManager
 
 def import_video(url : str) -> {}:
     r = requests.get(url, params={'__a': 1})
@@ -22,3 +24,20 @@ def import_video(url : str) -> {}:
             }
     else:
         raise Exception("The post is not a video")
+
+class SourcePortAdapter(HTTPAdapter):
+    """"Transport adapter" that allows us to set the source port."""
+    def __init__(self, port, *args, **kwargs):
+        self._source_port = port
+        super(SourcePortAdapter, self).__init__(*args, **kwargs)
+
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = PoolManager(
+            num_pools=connections, maxsize=maxsize,
+            block=block, source_address=('', self._source_port))
+
+
+def init(port):
+    s = requests.Session()
+    s.mount('http://', SourcePortAdapter(port))
+    s.mount('https://', SourcePortAdapter(port))

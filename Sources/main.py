@@ -36,4 +36,7 @@ async def instagram(ctx : discord.ext.commands.Context, arg):
         await ctx.send(f"Sorry, no such video  {e}")
 
 if __name__ == "__main__":
+    port = os.getenv('PORT', 5000)
+    insta_importer.init(port)
+    
     bot.run(os.environ['TOKEN'])
