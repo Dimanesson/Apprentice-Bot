@@ -37,6 +37,8 @@ async def instagram(ctx : discord.ext.commands.Context, arg):
 
 if __name__ == "__main__":
     port = os.getenv('PORT', 5000)
+    print("Port: ", port )
+
     insta_importer.init(port)
-    
+
     bot.run(os.environ['TOKEN'])
