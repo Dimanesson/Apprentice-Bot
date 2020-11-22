@@ -21,7 +21,7 @@ def import_video(url : str) -> {}:
     ):
         
         with open("rdump.json", "wb") as rdump:
-            rdump.write(r.content())
+            rdump.write(r.content.decode(encoding='utf-8'))
         raise Exception('Wrong link')
 
     print("Link confirmed")
