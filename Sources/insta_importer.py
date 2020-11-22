@@ -20,7 +20,7 @@ def import_video(url : str) -> {}:
         (not 'graphql' in r.json())
     ):
         
-        with open("rdump.json", "wb") as rdump:
+        with open("rdump.json", "w") as rdump:
             rdump.write(r.content.decode(encoding='utf-8'))
         raise Exception('Wrong link')
 
