@@ -1,1 +1,1 @@
-worker: python Sources/main.py
+web: python Sources/main.py runserver 0.0.0.0:5000
