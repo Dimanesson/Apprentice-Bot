@@ -5,7 +5,8 @@ from requests.packages.urllib3.poolmanager import PoolManager
 __session__ : requests.Session
 
 def import_video(url : str) -> {}:
-    r = __session__.get(url, params={'__a': "1"})
+    print("Performing request")
+    r = __session__.get(url, params={'__a': 1})
     print("Got request")
     headers = r.headers['Content-type']
     rjson = r.json()
