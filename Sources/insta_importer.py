@@ -40,6 +40,7 @@ class SourcePortAdapter(HTTPAdapter):
 
 
 def init(port):
+    global __session__
     __session__ = requests.Session()
     __session__.mount('http://', SourcePortAdapter(port))
     __session__.mount('https://', SourcePortAdapter(port))
