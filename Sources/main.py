@@ -2,6 +2,7 @@ import discord
 import re
 import bday
 import user_db
+import insta_importer
 from discord.ext import commands
 from config import settings
 
@@ -25,6 +26,16 @@ async def register(ctx, arg):
     except Exception as e:
         await ctx.send(f"Sorry, {author}, can't register your bday due error: {e} ;(")
     
+
+@bot.command()
+async def instagram(ctx : discord.ext.commands.Context, arg):
+    try:
+        with insta_importer.import_video(arg) as video_data:
+            file = discord.File(video_data.path, video_data.title)
+            await ctx.send(content=video_data.title, file=file)
+
+    except Exception as e:
+        await ctx.send(f"Sorry, no such video  {e}")
 
 if __name__ == "__main__":
     bot.run(settings['token']) # Обращаемся к словарю settings с ключом token, для получения токена
