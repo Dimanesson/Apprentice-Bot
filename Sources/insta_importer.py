@@ -8,7 +8,14 @@ def import_video(url : str) -> {}:
     print("Performing request")
     r = __session__.get(url, params={'__a': 1})
     print("Got request")
+    with open("rdump.json", "w") as rdump:
+        rdump.write(r.json())
+    print("Dumped JSON")
+
     headers = r.headers['Content-type']
+
+    print("Got headers")
+
     rjson = r.json()
     if (
         (not 'application/json' in headers) or
@@ -16,7 +23,12 @@ def import_video(url : str) -> {}:
     ):
         raise Exception('Wrong link')
 
+    print("Link confirmed")
+
     media = rjson['graphql']['shortcode_media']
+
+    print("Got media")
+
     if media['is_video']:
         return {
             "url" : media["video_url"],
