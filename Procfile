@@ -1,1 +1,2 @@
-web: python Sources/main.py runserver 0.0.0.0:$PORT
+release: heroku ps:scale web=1
+worker: python Sources/main.py
