@@ -2,8 +2,10 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
+__session__ : requests.Session
+
 def import_video(url : str) -> {}:
-    r = requests.get(url, params={'__a': 1})
+    r = __session__.get(url, params={'__a': 1})
     headers = r.headers['Content-type']
     rjson = r.json()
     if (
@@ -38,6 +40,6 @@ class SourcePortAdapter(HTTPAdapter):
 
 
 def init(port):
-    s = requests.Session()
-    s.mount('http://', SourcePortAdapter(port))
-    s.mount('https://', SourcePortAdapter(port))
+    __session__ = requests.Session()
+    __session__.mount('http://', SourcePortAdapter(port))
+    __session__.mount('https://', SourcePortAdapter(port))
