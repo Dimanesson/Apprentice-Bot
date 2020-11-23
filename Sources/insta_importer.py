@@ -4,14 +4,21 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
-__session__: requests.Session
+__port__ = 5001
 
 
 def import_video(url: str) -> {}:
     u_a = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
-    print("Performing request")
-    r = __session__.get(url, params={'__a': 1, "user-agent": u_a, "accept": "application/json"})
-    print("Got request")
+
+    r: requests.Response
+    with requests.Session() as session:
+        global __port__
+        session.mount('http://', SourcePortAdapter(__port__))
+        session.mount('https://', SourcePortAdapter(__port__))
+        print("Performing request")
+        r = session.get(
+            url, params={'__a': "1"}, headers={"user-agent": u_a, "accept": "application/json"})
+        print("Got request")
 
     headers = r.headers['Content-type']
 
@@ -21,7 +28,7 @@ def import_video(url: str) -> {}:
         (not 'application/json' in headers) or
         (not 'graphql' in r.json())
     ):
-        print(r.content.decode(encoding='utf-8'))
+        print(headers)
         raise Exception('Wrong link')
 
     print("Link confirmed")
@@ -59,9 +66,6 @@ class SourcePortAdapter(HTTPAdapter):
             block=block, source_address=('', self._source_port))
 
 
-def init(port):
-    global __session__
-    __session__ = requests.Session()
-    __session__.mount('http://', SourcePortAdapter(port))
-    __session__.mount('https://', SourcePortAdapter(port))
-    return __session__
+def init(port: int):
+    global __port__
+    __port__ = port
