@@ -41,7 +41,5 @@ if __name__ == "__main__":
     port = int(os.getenv('PORT', 5000))
     print("Port: ", port )
 
-    insta_importer.init(port)
-
-    bot.run(os.environ['TOKEN'])
-    insta_importer.unit()
+    with insta_importer.init(port) as http_sess:
+        bot.run(os.environ['TOKEN'])
