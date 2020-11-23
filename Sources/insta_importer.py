@@ -10,7 +10,7 @@ __session__: requests.Session
 def import_video(url: str) -> {}:
     u_a = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
     print("Performing request")
-    r = __session__.get(url, params={'__a': 1, "user-agent": u_a})
+    r = __session__.get(url, params={'__a': 1, "user-agent": u_a, "accept": "application/json"})
     print("Got request")
 
     headers = r.headers['Content-type']
