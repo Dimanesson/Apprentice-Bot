@@ -4,9 +4,6 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
-# todo: remove
-import pathlib
-
 __session__ : requests.Session
 
 def import_video(url : str) -> {}:
@@ -22,17 +19,12 @@ def import_video(url : str) -> {}:
         (not 'application/json' in headers) or
         (not 'graphql' in r.json())
     ):
-        fpath = pathlib.Path(__file__).parent.absolute().joinpath("rdump.txt").as_posix()
-        print(fpath)
-        with open(fpath, "w") as rdump:
-            rdump.write(r.content.decode(encoding='utf-8'))
-            rdump.flush()
+        print(r.content.decode(encoding='utf-8'))
         raise Exception('Wrong link')
 
     print("Link confirmed")
     
-    with open("rdump.json", "w") as rdump:
-        rdump.write(r.json())
+    print(r.json())
     print("Dumped JSON")
 
     media = r.json()['graphql']['shortcode_media']
