@@ -4,7 +4,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.poolmanager import PoolManager
 
-__port__ = 5001
+__port__ = 5000
 
 
 def import_video(url: str) -> {}:
@@ -17,7 +17,7 @@ def import_video(url: str) -> {}:
         session.mount('https://', SourcePortAdapter(__port__))
         print("Performing request")
         r = session.get(
-            url, params={'__a': "1"}, headers={"user-agent": u_a, "accept": "application/json"})
+            url, params={'__a': 1}, headers={"x-requested-with": "XMLHttpRequest", "user-agent": u_a, "accept": "application/json"})
         print("Got request")
 
     headers = r.headers['Content-type']
