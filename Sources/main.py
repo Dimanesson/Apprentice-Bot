@@ -44,3 +44,4 @@ if __name__ == "__main__":
     insta_importer.init(port)
 
     bot.run(os.environ['TOKEN'])
+    insta_importer.unit()

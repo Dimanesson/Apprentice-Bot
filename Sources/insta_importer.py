@@ -7,8 +7,9 @@ from requests.packages.urllib3.poolmanager import PoolManager
 __session__ : requests.Session
 
 def import_video(url : str) -> {}:
+    u_a = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.82 Safari/537.36"
     print("Performing request")
-    r = __session__.get(url, params={'__a': 1})
+    r = __session__.get(url, params={'__a': 1, "USER-AGENT":u_a})
     print("Got request")
 
     headers = r.headers['Content-type']
@@ -60,3 +61,7 @@ def init(port):
     __session__ = requests.Session()
     __session__.mount('http://', SourcePortAdapter(port))
     __session__.mount('https://', SourcePortAdapter(port))
+
+def unit():
+    global __session__
+    __session__.close()
