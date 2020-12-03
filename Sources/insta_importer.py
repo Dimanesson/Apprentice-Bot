@@ -1,44 +1,40 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.poolmanager import PoolManager
+import re
+import json
+from bs4 import BeautifulSoup
 
-__port__ = 5000
 
+def import_video(url: str, session=requests.Session()) -> {}:
+    url = re.sub(r"/\?.+", "", url)
 
-def import_video(url: str) -> {}:
     u_a = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
-
-    r: requests.Response
-    with requests.Session() as session:
-        global __port__
-        session.mount('http://', SourcePortAdapter(__port__))
-        session.mount('https://', SourcePortAdapter(__port__))
-        print("Performing request")
-        r = session.get(
-            url, params={'__a': 1}, headers={"x-requested-with": "XMLHttpRequest", "user-agent": u_a, "accept": "application/json"})
-        print("Got request")
+    r = session.get(
+        url, params={'__a': 1}, headers={"x-requested-with": "XMLHttpRequest", "user-agent": u_a, "accept": "application/json"})
 
     headers = r.headers['Content-type']
 
-    print("Got headers")
+    media = {}
 
     if (
-        (not 'application/json' in headers) or
-        (not 'graphql' in r.json())
+        ('application/json' in headers) and
+        ('graphql' in r.json())
     ):
-        print(headers)
-        raise Exception('Wrong link')
+        print("Got JSON respond")
 
-    print("Link confirmed")
+        media = r.json()['graphql']['shortcode_media']
 
-    print(r.json())
-    print("Dumped JSON")
-
-    media = r.json()['graphql']['shortcode_media']
-
-    print("Got media")
+    elif ('text/html' in headers):
+        print("Got HTML respond")
+        
+        bs = BeautifulSoup(r.text, features="html.parser")
+        for script in bs.find_all("script"):
+            if script.string and "window._sharedData = " in script.string:
+                json_str = re.sub("window._sharedData = ", "", script.string)
+                json_str = json_str[:-1]
+                media = json.loads(
+                    json_str)['entry_data']['PostPage'][0]['graphql']['shortcode_media']
 
     if media['is_video']:
         return {
@@ -51,21 +47,3 @@ def import_video(url: str) -> {}:
         }
     else:
         raise Exception("The post is not a video")
-
-
-class SourcePortAdapter(HTTPAdapter):
-    """"Transport adapter" that allows us to set the source port."""
-
-    def __init__(self, port, *args, **kwargs):
-        self._source_port = port
-        super(SourcePortAdapter, self).__init__(*args, **kwargs)
-
-    def init_poolmanager(self, connections, maxsize, block=False):
-        self.poolmanager = PoolManager(
-            num_pools=connections, maxsize=maxsize,
-            block=block, source_address=('', self._source_port))
-
-
-def init(port: int):
-    global __port__
-    __port__ = port

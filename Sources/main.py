@@ -6,6 +6,7 @@ import re
 import bday
 import user_db
 import insta_importer
+import http_port
 from discord.ext import commands
 from config import settings
 
@@ -35,12 +36,16 @@ async def instagram(ctx : discord.ext.commands.Context, arg):
         await ctx.send(embed=emb)
 
     except Exception as e:
-        await ctx.send(f"Sorry, no such video  {e}")
+        await ctx.send(f"Sorry, cannot upload the video: {e}")
 
 if __name__ == "__main__":
     port = int(os.getenv('PORT', 5000))
     print("Port: ", port )
 
-    insta_importer.init(port)
-
-    bot.run(os.environ['TOKEN'])
+    try:
+        http_port.init(port)
+        bot.run(os.environ['TOKEN'])
+    except Exception as e:
+        print(e)
+    finally:
+        http_port.uninit()
