@@ -35,6 +35,15 @@ async def instagram(ctx : discord.ext.commands.Context, arg):
         emb.set_author(name=video['username'], url=f"https://instagram.com/{video['username']}", icon_url=video["usericon"])
         await ctx.send(embed=emb)
 
+    except insta_importer.FileContentException as e:
+        fname = ""
+        with open("exception.html", "w") as f:
+            f.write(e.contents)
+            fname = f.name()
+        
+        await ctx.send(e, file=discord.File(fname))
+        os.remove(fname)
+
     except Exception as e:
         await ctx.send(f"Sorry, cannot upload the video: {e}")
 

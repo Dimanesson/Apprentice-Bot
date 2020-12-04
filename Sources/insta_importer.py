@@ -5,6 +5,13 @@ import re
 import json
 from bs4 import BeautifulSoup
 
+class FileContentException(Exception):
+    def __init__(self, message : str, contents : str):
+        self.contents = contents
+        super(Exception, self).__init__(message)
+
+    contents : str
+
 
 def import_video(url: str, session=requests.Session()) -> {}:
     url = re.sub(r"/\?.+", "", url)
@@ -36,6 +43,8 @@ def import_video(url: str, session=requests.Session()) -> {}:
                 print(json.dumps(json_str, indent="\t"))
                 media = json.loads(
                     json_str)['entry_data']['PostPage'][0]['graphql']['shortcode_media']
+        if not media:
+            raise FileContentException("Cannot obtain media", r.content.decode("UTF-8"))
 
     if media['is_video']:
         return {
