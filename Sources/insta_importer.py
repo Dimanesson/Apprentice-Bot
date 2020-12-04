@@ -33,6 +33,7 @@ def import_video(url: str, session=requests.Session()) -> {}:
             if script.string and "window._sharedData = " in script.string:
                 json_str = re.sub("window._sharedData = ", "", script.string)
                 json_str = json_str[:-1]
+                print(json.dumps(json_str, indent="\t"))
                 media = json.loads(
                     json_str)['entry_data']['PostPage'][0]['graphql']['shortcode_media']
 
