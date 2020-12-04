@@ -21,12 +21,12 @@ def import_video(url: str, session=requests.Session()) -> {}:
         ('application/json' in headers) and
         ('graphql' in r.json())
     ):
-        print("Got JSON respond")
+        print("Got JSON response")
 
         media = r.json()['graphql']['shortcode_media']
 
     elif ('text/html' in headers):
-        print("Got HTML respond")
+        print("Got HTML response")
         
         bs = BeautifulSoup(r.text, features="html.parser")
         for script in bs.find_all("script"):
